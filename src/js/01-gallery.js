@@ -2,9 +2,12 @@ import {
     galleryItems
 } from './gallery-items.js';
 
-const divElement = document.querySelector(".gallery");
+// console.log(galleryItems);
 
-divElement.addEventListener('click', imageOriginal);
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
+const element = document.querySelector(".gallery");
 
 const galleryElement = galleryItems
     .map(({
@@ -12,35 +15,18 @@ const galleryElement = galleryItems
         original,
         description
     }) => {
-        return `<div class="gallery__item">
-    <a class="gallery__link" href="${original}">
-    <img
-    class="gallery__image"
-    src="${preview}"
-    data-source="${original}"
+        return `<a class="gallery__item" href="${original}">
+    <img class="gallery__image" 
+    src="${preview}" 
     alt="${description}" />
-    </a>
-    </div>`;
+    </a>`;
     })
     .join("");
 
-divElement.innerHTML = galleryElement;
+element.innerHTML = galleryElement;
 
-function imageOriginal(event) {
-    event.preventDefault();
+let lightbox = new SimpleLightbox(".gallery a", {
+    captionsData: "alt",
+    captionDelay: 250,
+});
 
-    if (event.target.nodeName !== "IMG") {
-        return;
-    }
-
-    const instance = basicLightbox.create(
-        `<img src="${event.target.dataset.source}" width='800' height='600'></img>`
-    );
-    instance.show();
-
-    divElement.addEventListener("keydown", (event) => {
-        if (event.code === "Escape") {
-            instance.close();
-        }
-    });
-}
